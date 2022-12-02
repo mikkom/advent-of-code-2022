@@ -1,5 +1,6 @@
 module AocUtils
 
+import Data.List
 import Data.Vect
 import System
 import System.File
@@ -8,8 +9,7 @@ import System.File
 
 export
 safeTail : List a -> List a
-safeTail [] = []
-safeTail (x :: xs) = xs
+safeTail = drop 1
 
 export
 windowed : (n : Nat) -> {m : Nat} -> Vect (n + m) a -> Vect (S m) (Vect n a)

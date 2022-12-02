@@ -4,6 +4,7 @@ import AocUtils
 import Data.List1
 import Data.Morphisms
 import Data.String
+import Data.Vect
 
 %default total
 
@@ -31,8 +32,27 @@ part1 = Mor $ ("Part 1: " ++) . show . solve1
 solve2 : Input -> Nat
 solve2 = sum . take 3 . reverse . sort . map sum . forget
 
+solve2' : Input -> Nat
+solve2' = sum . foldl update [0, 0, 0] . map sum
+  where
+    update : List Nat -> Nat -> List Nat
+    update xs x = safeTail $ sort (x :: xs)
+    
+
+solve2'' : Input -> Nat
+solve2'' = sum . foldl update [0, 0, 0] . map sum
+  where
+    insert : Nat -> Vect 2 Nat -> Vect 3 Nat
+    insert x [y, z] =
+      if x <= y then [x, y, z]
+      else if x <= z then [y, x, z]
+      else [y, z, x]
+
+    update : Vect 3 Nat -> Nat -> Vect 3 Nat
+    update (y :: ys) x = if x > y then insert x ys else (y :: ys)
+
 part2 : Input ~> String
-part2 = Mor $ ("Part 2: " ++) . show . solve2
+part2 = Mor $ ("Part 2: " ++) . show . solve2''
 
 -- Plumbing
 
