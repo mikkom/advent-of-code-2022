@@ -1,6 +1,7 @@
 module AocUtils
 
 import Data.List
+import Data.List1
 import Data.Vect
 import System
 import System.File
@@ -8,8 +9,19 @@ import System.File
 %default total
 
 export
+mapBoth : (a -> b) -> (a, a) -> (b, b)
+mapBoth f (x, y) = (f x, f y)
+
+export
 safeTail : List a -> List a
 safeTail = drop 1
+
+export
+partial
+chunksOf : Nat -> List a -> List (List1 a)
+chunksOf 0 xs = []
+chunksOf _ [] = []
+chunksOf (S k) (x :: xs) = (x ::: take k xs) :: chunksOf (S k) (drop k xs)
 
 export
 windowed : (n : Nat) -> {m : Nat} -> Vect (n + m) a -> Vect (S m) (Vect n a)
