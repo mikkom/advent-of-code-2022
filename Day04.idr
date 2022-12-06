@@ -16,16 +16,12 @@ Input : Type
 Input = List (Interval, Interval)
 
 partial
-parsePair : List a -> (a, a)
-parsePair [x, y] = (x, y)
-
-partial
 parseInterval : String -> Interval
-parseInterval = parsePair . map cast . forget . split (== '-')
+parseInterval = parsePair . map cast . split (== '-')
 
 partial
 parse : String -> Input
-parse = map (parsePair . map parseInterval . forget . split (== ',')) . lines
+parse = map (parsePair . map parseInterval . split (== ',')) . lines
 
 -- Part 1
 
