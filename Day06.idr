@@ -22,7 +22,7 @@ allDiffer xs = length xs == length (SortedSet.toList (fromList xs))
 
 solve1 : Input -> Maybe Nat
 solve1 =
-  map ((+ 4) . snd) . find (allDiffer . fst) . zipWithIndex . windowed' 4
+  map ((+ 4) . fst) . find (allDiffer . snd) . zipWithIndex . windowed' 4
 
 part1 : Input ~> String
 part1 = Mor $ ("Part 1: " ++) . show . solve1
@@ -31,7 +31,7 @@ part1 = Mor $ ("Part 1: " ++) . show . solve1
 
 solve2 : Input -> Maybe Nat
 solve2 =
-  map ((+ 14) . snd) . find (allDiffer . fst) . zipWithIndex . windowed' 14
+  map ((+ 14) . fst) . find (allDiffer . snd) . zipWithIndex . windowed' 14
 
 part2 : Input ~> String
 part2 = Mor $ ("Part 2: " ++) . show . solve2

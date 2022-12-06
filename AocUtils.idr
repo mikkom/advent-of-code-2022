@@ -26,6 +26,12 @@ partial
 (!!) (x :: xs) (S k) = xs !! k
 
 export
+safeIndex : List a -> Nat -> Maybe a
+safeIndex [] k = Nothing
+safeIndex (x :: xs) 0 = Just x
+safeIndex (x :: xs) (S k) = safeIndex xs k
+
+export
 mapBoth : (a -> b) -> (a, a) -> (b, b)
 mapBoth f (x, y) = (f x, f y)
 
@@ -63,12 +69,12 @@ windowed' n ys @ (x :: xs) =
   else take n ys :: windowed' n xs
 
 export
-zipWithIndex : List a -> List (a, Nat)
+zipWithIndex : List a -> List (Nat, a)
 zipWithIndex = loop 0
   where
-    loop : Nat -> List a -> List (a, Nat)
+    loop : Nat -> List a -> List (Nat, a)
     loop i [] = []
-    loop i (x :: xs) = (x, i) :: loop (S i) xs
+    loop i (x :: xs) = (i, x) :: loop (S i) xs
 
 export
 fail : String -> IO ()
