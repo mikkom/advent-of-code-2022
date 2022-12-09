@@ -2,6 +2,7 @@ module AocUtils
 
 import Data.List
 import Data.List1
+import Data.Nat
 import Data.Vect
 import System
 import System.File
@@ -40,13 +41,22 @@ mapPair : (a -> a') -> (b -> b') -> (a, b) -> (a', b')
 mapPair f g (x, y) = (f x, g y)
 
 export
+mapTwice : (a -> b) -> (a -> c) -> a -> (b, c)
+mapTwice f g x = (f x, g x)
+
+export
+covering
+max' : Ord a => List1 a -> a
+max' (x ::: []) = x
+max' (x ::: y :: ys) = max' $ max x y ::: ys
+
+export
 safeTail : List a -> List a
 safeTail = drop 1
 
 export
-partial
-chunksOf : Nat -> List a -> List (List1 a)
-chunksOf 0 xs = []
+covering
+chunksOf : (n : Nat) -> NonZero n => List a -> List (List1 a)
 chunksOf _ [] = []
 chunksOf (S k) (x :: xs) = (x ::: take k xs) :: chunksOf (S k) (drop k xs)
 
