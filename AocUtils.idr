@@ -45,6 +45,11 @@ mapTwice : (a -> b) -> (a -> c) -> a -> (b, c)
 mapTwice f g x = (f x, g x)
 
 export
+signum : Int -> Int
+signum 0 = 0
+signum x = if x > 0 then 1 else -1
+
+export
 covering
 max' : Ord a => List1 a -> a
 max' (x ::: []) = x
