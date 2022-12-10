@@ -84,12 +84,24 @@ windowed' n ys @ (x :: xs) =
   else take n ys :: windowed' n xs
 
 export
-zipWithIndex : List a -> List (Nat, a)
-zipWithIndex = loop 0
+mapi : (Nat -> a -> b) -> List a -> List b
+mapi f = loop 0
   where
-    loop : Nat -> List a -> List (Nat, a)
-    loop i [] = []
-    loop i (x :: xs) = (i, x) :: loop (S i) xs
+    loop : Nat -> List a -> List b
+    loop k [] = []
+    loop k (x :: xs) = f k x :: loop (S k) xs
+
+export
+zipWithIndex : List a -> List (Nat, a)
+zipWithIndex = mapi (,)
+
+export
+covering
+everyNth : (n : Nat) -> NonZero n => List a -> List a
+everyNth n xs =
+  case splitAt (pred n) xs of
+    (_, []) => []
+    (_, (y :: ys)) => y :: (everyNth n ys)
 
 export
 fail : String -> IO ()
