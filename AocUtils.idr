@@ -51,6 +51,12 @@ signum x = if x > 0 then 1 else -1
 
 export
 covering
+min' : Ord a => List1 a -> a
+min' (x ::: []) = x
+min' (x ::: y :: ys) = min' $ min x y ::: ys
+
+export
+covering
 max' : Ord a => List1 a -> a
 max' (x ::: []) = x
 max' (x ::: y :: ys) = max' $ max x y ::: ys
