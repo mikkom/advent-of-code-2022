@@ -3,6 +3,7 @@ module AocUtils
 import Data.List
 import Data.List1
 import Data.Nat
+import Data.SortedMap
 import Data.Vect
 import System
 import System.File
@@ -18,6 +19,16 @@ export
 partial
 parsePair : List1 a -> (a, a)
 parsePair = parsePair' . forget
+
+export
+pairToList : (a, a) -> List a
+pairToList (x, y) = [x, y]
+
+infixl 10 |>
+export
+partial
+(|>) : a -> (a -> b) -> b
+(|>) x f = f x
 
 infixl 10 !!
 export
@@ -51,15 +62,29 @@ signum x = if x > 0 then 1 else -1
 
 export
 covering
-min' : Ord a => List1 a -> a
-min' (x ::: []) = x
-min' (x ::: y :: ys) = min' $ min x y ::: ys
+min' : Ord a => List a -> Maybe a
+min' [] = Nothing
+min' [x] = Just x
+min' (x :: y :: ys) = min' $ (min x y) :: ys
 
 export
 covering
-max' : Ord a => List1 a -> a
-max' (x ::: []) = x
-max' (x ::: y :: ys) = max' $ max x y ::: ys
+max' : Ord a => List a -> Maybe a
+max' [] = Nothing
+max' [x] = Just x
+max' (x :: y :: ys) = max' $ (max x y) :: ys
+
+export
+covering
+min1 : Ord a => List1 a -> a
+min1 (x ::: []) = x
+min1 (x ::: y :: ys) = min1 $ min x y ::: ys
+
+export
+covering
+max1 : Ord a => List1 a -> a
+max1 (x ::: []) = x
+max1 (x ::: y :: ys) = max1 $ max x y ::: ys
 
 export
 safeTail : List a -> List a
@@ -108,6 +133,29 @@ everyNth n xs =
   case splitAt (pred n) xs of
     (_, []) => []
     (_, (y :: ys)) => y :: (everyNth n ys)
+
+export
+filter : (v -> Bool) -> SortedMap k v -> List (k, v)
+filter f = filter (f . snd) . SortedMap.toList
+
+export
+find : (v -> Bool) -> SortedMap k v -> Maybe (k, v)
+find f = find (f . snd) . SortedMap.toList
+
+export
+member : k -> SortedMap k v -> Bool
+member k = isJust . lookup k
+
+export
+adjust : (v -> v) -> k -> SortedMap k v -> SortedMap k v
+adjust f k m =
+  case lookup k m of
+    Nothing => m
+    Just x => insert k (f x) m
+
+export
+lookupEntry : k -> SortedMap k v -> Maybe (k, v)
+lookupEntry k = map (k, ) . lookup k
 
 export
 fail : String -> IO ()
